@@ -1,11 +1,14 @@
 terraform {
   required_providers {
-    hashicups = {
-      source = "hashicorp.com/edu/hashicups-pf"
+    beget = {
+      source = "hashicorp.com/edu/beget"
     }
   }
 }
 
-provider "hashicups" {}
+provider "beget" {
+  username = "education"
+  password = "test123"
+}
 
-data "hashicups_coffees" "example" {}
+data "beget_software" "example" {}

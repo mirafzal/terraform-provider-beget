@@ -1,19 +1,19 @@
 terraform {
   required_providers {
-    hashicups = {
-      source  = "hashicorp.com/edu/hashicups-pf"
+    beget = {
+      source  = "hashicorp.com/edu/beget"
     }
   }
   required_version = ">= 1.1.0"
 }
 
-provider "hashicups" {
+provider "beget" {
   username = "education"
   password = "test123"
   host     = "http://localhost:19090"
 }
 
-resource "hashicups_order" "edu" {
+resource "beget_server" "edu" {
   items = [{
     coffee = {
       id = 3
@@ -28,6 +28,6 @@ resource "hashicups_order" "edu" {
   ]
 }
 
-output "edu_order" {
-  value = hashicups_order.edu
+output "edu_server" {
+  value = beget_server.edu
 }

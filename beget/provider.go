@@ -100,9 +100,15 @@ func (p *begetProvider) Configure(ctx context.Context, req provider.ConfigureReq
 
 	// Create a new beget client using the configuration values
 	begetConfig := begetOpenapiVps.NewConfiguration()
+	begetConfig.DefaultHeader["Authorization"] = "Bearer " + token
 	client := begetOpenapiVps.NewAPIClient(begetConfig)
 
-	ctx = context.WithValue(context.Background(), begetOpenapiVps.ContextAccessToken, token)
+	//ctx = context.WithValue(context.Background(), begetOpenapiVps.ContextAccessToken, token)
+
+	//begetApiClient := begetApiClient{
+	//	client: client,
+	//	token:  token,
+	//}
 
 	//if err != nil {
 	//	resp.Diagnostics.AddError(

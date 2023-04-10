@@ -119,10 +119,6 @@ func (d *softwareDataSource) Schema(_ context.Context, _ datasource.SchemaReques
 func (d *softwareDataSource) Read(ctx context.Context, req datasource.ReadRequest, resp *datasource.ReadResponse) {
 	var state softwareDataSourceModel
 
-	token := "eyJhbGciOiJSUzUxMiIsInR5cCI6IkpXVCJ9.eyJjdXN0b21lcklkIjoiMTIxNTQ3NCIsImN1c3RvbWVyTG9naW4iOiJidW5ueXBlYWNlIiwiZW52Ijoid2ViIiwiZXhwIjoxNzExNjE3ODYxLCJpYXQiOjE2ODAwNjM4MDEsImlwIjoiMTg1LjIwMy4yMzYuMjMwIiwiaXNzIjoiYXV0aC5iZWdldC5jb20iLCJqdGkiOiIzYjhlMWIzZDc0NTk4ZmQyYWU0MGJmMWM3YzY1NDgzMiIsInBhcmVudExvZ2luIjoiIiwic3ViIjoiY3VzdG9tZXIifQ.f-O8HGeMw0bkqXuZFzztUtSNhHSunpGdemu6gZY--3Q8RqglmYRCJNoF-1oVM7hvFynBV2iiFXLMsxdUtPC6aIL0tQxn8ovHsjEzbPmpAE_cCk1Tl7dIVm7Eq901L91KY522W0sDE3lqRE_USof1N_ssn-V--zAdBOEjgrUGjZla25KRFIaKB3u728nH0cW9INK3NrTh5lr6QQzF8JYqzn2bPrN0jWhWQjqtw4sDULo9_O7VEp272kjgqQfbpGl-IYdaaDtIlXhoapaU3XpE_Qd1pROyUK6BiCHstKKRca5i5aqh49Zm3zXWYNNweFDBUPf2FwZR3lBj3nV182Y5ZQ"
-
-	ctx = context.WithValue(context.Background(), begetOpenapiVps.ContextAccessToken, token)
-
 	software, _, err := d.client.MarketplaceServiceApi.MarketplaceServiceGetSoftwareList(ctx).Execute()
 	if err != nil {
 		resp.Diagnostics.AddError(

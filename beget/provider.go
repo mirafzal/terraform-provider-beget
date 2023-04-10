@@ -2,6 +2,7 @@ package beget
 
 import (
 	"context"
+	"github.com/hashicorp/terraform-plugin-log/tflog"
 	"os"
 
 	begetOpenapiVps "github.com/LTD-Beget/openapi-vps-go"
@@ -48,6 +49,8 @@ func (p *begetProvider) Schema(_ context.Context, _ provider.SchemaRequest, resp
 }
 
 func (p *begetProvider) Configure(ctx context.Context, req provider.ConfigureRequest, resp *provider.ConfigureResponse) {
+	tflog.Info(ctx, "Configuring Beget client")
+
 	// Retrieve provider data from configuration
 	var config begetProviderModel
 	diags := req.Config.Get(ctx, &config)
@@ -98,6 +101,11 @@ func (p *begetProvider) Configure(ctx context.Context, req provider.ConfigureReq
 		return
 	}
 
+	ctx = tflog.SetField(ctx, "beget_token", token)
+	ctx = tflog.MaskFieldValuesWithFieldKeys(ctx, "beget_token")
+
+	tflog.Debug(ctx, "Creating Beget client")
+
 	// Create a new beget client using the configuration values
 	begetConfig := begetOpenapiVps.NewConfiguration()
 	begetConfig.DefaultHeader["Authorization"] = "Bearer " + token
@@ -124,6 +132,8 @@ func (p *begetProvider) Configure(ctx context.Context, req provider.ConfigureReq
 	// type Configure methods.
 	resp.DataSourceData = client
 	resp.ResourceData = client
+
+	tflog.Info(ctx, "Configured Beget client", map[string]any{"success": true})
 }
 
 // DataSources defines the data sources implemented in the provider.

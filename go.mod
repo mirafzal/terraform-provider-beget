@@ -5,7 +5,6 @@ go 1.18
 require (
 	github.com/LTD-Beget/openapi-vps-go v1.5.1
 	github.com/hashicorp/terraform-plugin-framework v1.2.0
-	github.com/LTD-Beget/openapi-auth-go v1.1.1
 )
 
 require (

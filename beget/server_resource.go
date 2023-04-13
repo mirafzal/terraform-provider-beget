@@ -36,7 +36,7 @@ type serverResourceModel struct {
 	Configuration serverConfigurationModel `tfsdk:"configuration"`
 	Status        types.String             `tfsdk:"status"`
 	SshKeys       []serverSshKeyModel      `tfsdk:"ssh_keys"`
-	HasPassword   types.String             `tfsdk:"has_password"`
+	HasPassword   types.Bool               `tfsdk:"has_password"`
 }
 
 // serverConfigurationModel maps server config data.
@@ -164,16 +164,31 @@ func (r *serverResource) Create(ctx context.Context, req resource.CreateRequest,
 		return
 	}
 
-	// Generate API request body from plan
-	var items []hashicups.OrderItem
-	for _, item := range plan.Items {
-		items = append(items, hashicups.OrderItem{
-			Coffee: hashicups.Coffee{
-				ID: int(item.Coffee.ID.ValueInt64()),
-			},
-			Quantity: int(item.Quantity.ValueInt64()),
-		})
+	manageCreateVpsRequest := *begetOpenapiVps.NewManageCreateVpsRequest()
+	manageCreateVpsRequest.SetDisplayName(plan.DisplayName.ValueString())
+	manageCreateVpsRequest.SetHostname(plan.Hostname.ValueString())
+	manageCreateVpsRequest.SetConfigurationId(plan.Configuration.ID.ValueString())
+
+	var configurationParams begetOpenapiVps.StructuresConfigurationParams
+	configurationParams.SetCpuCount(int32(plan.Configuration.CpuCount.ValueInt64()))
+	configurationParams.SetDiskSize(int32(plan.Configuration.DiskSize.ValueInt64()))
+	configurationParams.SetMemory(int32(plan.Configuration.Memory.ValueInt64()))
+
+	manageCreateVpsRequest.SetConfigurationParams(configurationParams)
+
+	var manageSoftwareInstallInfo begetOpenapiVps.ManageSoftwareInstallInfo
+	// TODO software object in serverResourceModel
+
+	manageCreateVpsRequest.SetSoftware(manageSoftwareInstallInfo)
+
+	var sshKeyIds []int32
+	for _, sshKey := range plan.SshKeys {
+		sshKeyIds = append(sshKeyIds, int32(sshKey.ID.ValueInt64()))
 	}
+
+	manageCreateVpsRequest.SetSshKeys(sshKeyIds)
+
+	resp, r, err := r.client.ManageServiceApi.ManageServiceCreateVps(ctx).ManageCreateVpsRequest(manageCreateVpsRequest).Execute()
 
 	// Create new order
 	server, err := r.client.CreateOrder(items)
